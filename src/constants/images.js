@@ -5,6 +5,7 @@ import post2 from "../assets/posts/post2.png";
 import post3 from "../assets/posts/post3.png";
 import postProfile from "../assets/posts/postprofile.svg";
 import post6 from "../assets/posts/post6.jpg";
+import samplePhoto from "../assets/posts/samplephoto.jpg";
 
 const images = {
   Logo,
@@ -14,6 +15,7 @@ const images = {
   post3,
   postProfile,
   post6,
+  samplePhoto,
 };
 
 export default images;
