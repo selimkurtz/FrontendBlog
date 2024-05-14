@@ -16,41 +16,10 @@ import { images, stables } from "../../constants";
 import SuggestedPosts from "./container/SuggestedPosts";
 import CommentsContainer from "../../components/comments/CommentsContainer";
 import SocialShareButtons from "../../components/SocialShareButtons";
-import { getSinglePost } from "../../services/index/posts";
+import { getAllPosts, getSinglePost } from "../../services/index/posts";
 import ArticleDetailSkeleton from "./components/ArticleDetailSkeleton";
 import ErrorMessage from "../../components/ErrorMessage";
 import { useSelector } from "react-redux";
-
-const postsData = [
-  {
-    _id: "1",
-    image: images.post2,
-    title: "Help children get better education",
-    createdAt: "2023-01-28T15:35:53.607+0000",
-  },
-  {
-    _id: "2",
-    image: images.post3,
-    title: "Help children get better education",
-    createdAt: "2023-03-05T15:35:53.607+0000",
-  },
-  {
-    _id: "3",
-    image: images.post1,
-    title: "Help children get better education",
-    createdAt: "2023-03-03T15:35:53.607+0000",
-  },
-];
-
-const tagsData = [
-  "Medical",
-  "Lifestyle",
-  "Learn",
-  "Healthy",
-  "Food",
-  "Diet",
-  "Education",
-];
 
 const ArticleDetailPage = () => {
   const { slug } = useParams();
@@ -73,6 +42,11 @@ const ArticleDetailPage = () => {
         )
       );
     },
+  });
+
+  const { data: postsData } = useQuery({
+    queryFn: () => getAllPosts(),
+    queryKey: ["posts"],
   });
 
   return (
@@ -120,7 +94,7 @@ const ArticleDetailPage = () => {
             <SuggestedPosts
               header="Latest Article"
               posts={postsData}
-              tags={tagsData}
+              tags={data?.tags}
               className="mt-8 lg:mt-0 lg:max-w-xs"
             />
             <div className="mt-7 ">
@@ -128,8 +102,8 @@ const ArticleDetailPage = () => {
                 Share on:
               </h2>
               <SocialShareButtons
-                url={encodeURI("https://google.com")}
-                title={encodeURIComponent("Selim Deneme")}
+                url={encodeURI(window.location.href)}
+                title={encodeURIComponent(data?.title)}
               />
             </div>
           </div>
