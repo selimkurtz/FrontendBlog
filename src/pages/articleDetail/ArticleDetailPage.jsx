@@ -1,14 +1,6 @@
 /* eslint-disable no-empty-pattern */
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { generateHTML } from "@tiptap/html";
-import { Link, useParams } from "react-router-dom";
-import Bold from "@tiptap/extension-bold";
-import Document from "@tiptap/extension-document";
-import Paragraph from "@tiptap/extension-paragraph";
-import Text from "@tiptap/extension-text";
-import Italic from "@tiptap/extension-italic";
-import parse from "html-react-parser";
 
 import MainLayout from "../../components/MainLayout";
 import BreadCrumbs from "../../components/BreadCrumbs";
@@ -20,6 +12,9 @@ import { getAllPosts, getSinglePost } from "../../services/index/posts";
 import ArticleDetailSkeleton from "./components/ArticleDetailSkeleton";
 import ErrorMessage from "../../components/ErrorMessage";
 import { useSelector } from "react-redux";
+import parseJsonToHtml from "../../utils/parseJsonToHtml";
+import { Link, useParams } from "react-router-dom";
+import Editor from "../../components/editor/Editor";
 
 const ArticleDetailPage = () => {
   const { slug } = useParams();
@@ -36,11 +31,7 @@ const ArticleDetailPage = () => {
         { name: "Blog", link: "/blog" },
         { name: `${data.title}`, link: `/blog/${data.slug}` },
       ]);
-      setBody(
-        parse(
-          generateHTML(data?.body, [Bold, Italic, Text, Paragraph, Document])
-        )
-      );
+      setBody(parseJsonToHtml(data?.body));
     },
   });
 
@@ -82,7 +73,9 @@ const ArticleDetailPage = () => {
             <h1 className="text-xl font-medium font-roboto mt-4 text-dark-hard md:text-[26px]">
               {data?.title}
             </h1>
-            <div className="mt-4 prose prose-sm sm:prose-base">{body}</div>
+            {!isLoading && !isError && (
+              <Editor content={data?.body} editable={false} />
+            )}
             <CommentsContainer
               className="mt-10"
               comments={data?.comments}
@@ -93,7 +86,7 @@ const ArticleDetailPage = () => {
           <div>
             <SuggestedPosts
               header="Latest Article"
-              posts={postsData}
+              posts={postsData?.data}
               tags={data?.tags}
               className="mt-8 lg:mt-0 lg:max-w-xs"
             />
